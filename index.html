@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>MPI ROTASI Kelas 9 SMP - Transformasi Geometri</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts for Rustic Farm Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Patrick+Hand&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --font-rustic: 'Fredoka', 'Patrick Hand', cursive, sans-serif;
+  --font-hand: 'Patrick Hand', cursive, sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --wood-dark: #3a1e08;
+  --wood-mid: #5d3a1a;
+  --wood-light: #8c5828;
+  --parchment: #fcf4de;
+  --parchment-card: #f8edd1;
+  --ink: #2a1605;
+  --mut: #634b35;
+  --ac: #0284c7;
+  --im: #ea580c;
+  --ok: #15803d;
+  --bad: #b91c1c;
+}
+
+* { box-sizing: border-box; }
+
+html, body { 
+  margin: 0; 
+  padding: 0; 
+  width: 100%; 
+  height: 100%; 
+  font-family: var(--font-body); 
+  background-color: #caeedc;
+  color: var(--ink);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.font-rustic { font-family: var(--font-rustic); }
+.font-hand { font-family: var(--font-hand); }
+
+/* Vector Background Scene */
+.farm-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Animations */
+@keyframes windmillSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.windmill-blades {
+  transform-origin: 65px 110px;
+  animation: windmillSpin 14s linear infinite;
+}
+
+@keyframes cloudFloat {
+  0% { transform: translateX(0px); }
+  50% { transform: translateX(35px); }
+  100% { transform: translateX(0px); }
+}
+.floating-cloud { animation: cloudFloat 18s ease-in-out infinite; }
+
+/* Views / Screens logic */
+.screen {
+  display: none;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. Splash Screen Styling */
+#screen-splash {
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(20, 38, 15, 0.45);
+  backdrop-filter: blur(5px);
+}
+
+.splash-card {
+  background: linear-gradient(180deg, #fef5dd 0%, #f4e3b5 100%);
+  border: 6px solid #4a280e;
+  border-radius: 28px;
+  padding: 36px 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 3px 0 rgba(255,255,255,0.8), inset 0 -5px 0 #8c5828;
+  max-width: 500px;
+  width: 100%;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.splash-title-box {
+  background: linear-gradient(180deg, #7c461e 0%, #46250b 100%);
+  border: 4px solid #281404;
+  border-radius: 20px;
+  padding: 20px 16px;
+  margin: 16px 0 28px 0;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.35), inset 0 2px 0 #a96f3e;
+}
+
+.splash-title-box h1 {
+  font-family: var(--font-rustic);
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
+  font-weight: 700;
+  color: #fff9e6;
+  text-shadow: 2px 3px 0px #1e0b02, 0 0 12px rgba(255,215,0,0.3);
+  line-height: 1.25;
+}
+
+.play-btn {
+  font-family: var(--font-rustic);
+  font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(180deg, #22c55e 0%, #15803d 100%);
+  border: 4px solid #052e16;
+  border-radius: 99px;
+  padding: 14px 44px;
+  cursor: pointer;
+  box-shadow: 0 8px 0 #052e16, 0 12px 20px rgba(0,0,0,0.3), inset 0 3px 0 rgba(255,255,255,0.5);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  animation: pulseBtn 2s infinite;
+}
+
+@keyframes pulseBtn {
+  0%, 100% { transform: scale(1); box-shadow: 0 8px 0 #052e16, 0 12px 20px rgba(0,0,0,0.3); }
+  50% { transform: scale(1.04); box-shadow: 0 10px 0 #052e16, 0 16px 28px rgba(34,197,94,0.4); }
+}
+
+.play-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 #052e16;
+}
+
+/* 2. Dashboard Screen Styling */
+#screen-dashboard {
+  padding: 16px 16px 32px 16px;
+  align-items: center;
+}
+
+.dash-header {
+  background: linear-gradient(180deg, #6e431f 0%, #46280e 100%);
+  border: 4px solid #281404;
+  border-radius: 18px;
+  padding: 12px 24px;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4), inset 0 2px 0 #996233;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 24px;
+  width: min(100%, 720px);
+}
+
+.dash-header h2 {
+  font-family: var(--font-rustic);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  margin: 0;
+  color: #fef08a;
+  text-shadow: 2px 2px 0 #1b0c02;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  width: min(100%, 960px);
+  margin-bottom: 28px;
+}
+
+.dash-card {
+  background: linear-gradient(135deg, #fef8eb 0%, #f4e5bf 100%);
+  border: 4px solid #5a3818;
+  border-radius: 20px;
+  padding: 20px 18px;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.25), inset 0 0 10px rgba(90,56,24,0.12);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: #7c461e;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.35);
+}
+
+.dash-card:active {
+  transform: translateY(2px);
+}
+
+.dash-card .icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: #fde047;
+  border: 3px solid #78350f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 0 #78350f;
+}
+
+.dash-card h3 {
+  font-family: var(--font-rustic);
+  font-size: 1.25rem;
+  color: #3d2005;
+  margin: 0 0 6px 0;
+}
+
+.dash-card p {
+  font-size: 0.88rem;
+  color: #634b35;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* 3. Module Screen Styling */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 12px 14px 28px 14px;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.btn-back-dash {
+  font-family: var(--font-rustic);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(180deg, #ea580c 0%, #c2410c 100%);
+  border: 3px solid #7c2d12;
+  border-radius: 12px;
+  padding: 8px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #451a03, inset 0 1px 0 rgba(255,255,255,0.4);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-back-dash:hover { filter: brightness(1.08); }
+.btn-back-dash:active { transform: translateY(2px); box-shadow: 0 2px 0 #451a03; }
+
+nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  background: linear-gradient(180deg, #64748b 0%, #334155 100%);
+  border: 2px solid #1e293b;
+  border-radius: 10px;
+  padding: 6px 12px;
+  min-height: 42px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #0f172a;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-btn.on {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border-color: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 3px 0 #0c4a6e, inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+/* Layout Content */
+.row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+/* Canvas Responsiveness Fix for Mobile */
+.cvwrap {
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 1 / 1;
+  flex: 1 1 300px;
+  position: relative;
+  margin: 0 auto;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 18px;
+  border: 4px solid #5a3818;
+  background: #fbf6e9;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 0 12px rgba(90,56,24,0.15);
+  touch-action: none;
+}
+
+/* Panels & Wooden Cards */
+.panel {
+  flex: 1 1 320px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.card {
+  background: linear-gradient(135deg, #fef8eb 0%, #f5e7c8 100%);
+  border: 3.5px solid #5a3818;
+  border-radius: 16px;
+  padding: 14px 16px;
+  color: var(--ink);
+  box-shadow: inset 0 0 8px rgba(90,56,24,0.12), 0 5px 12px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.card h3 {
+  margin: 0 0 8px 0;
+  font-family: var(--font-rustic);
+  font-size: 1.15rem;
+  color: #3d2005;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 2px dashed #d8c29d;
+  padding-bottom: 4px;
+}
+
+.ctl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 6px 0;
+}
+
+.ctl b {
+  min-width: 1.8em;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #3d2005;
+}
+
+/* Mobile-Friendly Coordinate Inputs */
+.coord-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 10px;
+  background: rgba(140, 88, 40, 0.08);
+  border: 2px dashed #8c5828;
+  border-radius: 12px;
+}
+
+.coord-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.coord-row label {
+  font-weight: 800;
+  color: #3d2005;
+  min-width: 22px;
+}
+
+.coord-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #ffffff;
+  border: 2px solid #8c5828;
+  border-radius: 8px;
+  padding: 2px 4px;
+}
+
+.coord-input-wrap input {
+  width: 44px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink);
+  outline: none;
+}
+
+.btn-sign {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #fde047;
+  border: 1.5px solid #78350f;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #451a03;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+button.btn-farm {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #3d2005;
+  background: linear-gradient(180deg, #fde68a 0%, #f59e0b 100%);
+  border: 2px solid #78350f;
+  border-radius: 10px;
+  padding: 6px 12px;
+  min-height: 38px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #78350f, inset 0 1px 0 #fffbe2;
+  transition: all 0.12s ease;
+  touch-action: manipulation;
+}
+
+button.btn-farm:hover { filter: brightness(1.08); }
+button.btn-farm:active { transform: translateY(2px); box-shadow: 0 1px 0 #78350f; }
+
+button.btn-farm.pri {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border-color: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 3px 0 #0c4a6e, inset 0 1px 0 rgba(255,255,255,0.4);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+button.btn-farm.on {
+  background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+  border-color: #14532d;
+  color: #ffffff;
+  box-shadow: 0 3px 0 #14532d, inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+input[type=range] {
+  width: 100%;
+  height: 28px;
+  accent-color: #0284c7;
+  cursor: pointer;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 4px;
+}
+
+td, th {
+  padding: 6px 8px;
+  border-bottom: 1px dashed #d8c29d;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+th { font-weight: 700; color: #3d2005; }
+
+.big { font-size: 1.1rem; font-weight: 700; }
+.im { color: var(--im); }
+.ac { color: var(--ac); }
+.mut { color: var(--mut); font-size: 0.85rem; }
+.ok { color: var(--ok); font-weight: 700; }
+.bad { color: var(--bad); font-weight: 700; }
+
+.pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #f3e5c8;
+  border: 1px solid #cbb287;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4a2d0d;
+}
+
+.steps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.steps button { flex: 1 1 100px; }
+
+iframe {
+  width: 100%;
+  height: clamp(380px, 60vh, 600px);
+  border: 4px solid #5a3818;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+input[type=text] {
+  font-family: inherit;
+  padding: 6px 10px;
+  min-height: 40px;
+  border: 2px solid #8c5828;
+  border-radius: 10px;
+  flex: 1 1 180px;
+  background: #fffdf7;
+  color: var(--ink);
+}
+
+a.btn-link {
+  display: inline-block;
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 700;
+  color: #3d2005;
+  background: linear-gradient(180deg, #fde68a 0%, #f59e0b 100%);
+  border: 2px solid #78350f;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- SVG Farm Vector Background Scene -->
+<div class="farm-bg">
+<svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#caeedc"/>
+      <stop offset="40%" stop-color="#e2f7db"/>
+      <stop offset="80%" stop-color="#fff5c0"/>
+      <stop offset="100%" stop-color="#ffebb0"/>
+    </linearGradient>
+    <linearGradient id="hillGradBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bef264"/>
+      <stop offset="100%" stop-color="#84cc16"/>
+    </linearGradient>
+    <linearGradient id="hillGradFront" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a3e635"/>
+      <stop offset="100%" stop-color="#65a30d"/>
+    </linearGradient>
+    <linearGradient id="pathGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="50%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#fde047"/>
+    </linearGradient>
+    <linearGradient id="streamGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect x="0" y="0" width="1200" height="800" fill="url(#skyGrad)"/>
+
+  <!-- Clouds -->
+  <g class="floating-cloud" fill="#ffffff" opacity="0.85">
+    <path d="M 30 50 Q 50 30 80 40 Q 110 20 150 40 Q 180 45 170 70 Q 130 85 50 80 Z"/>
+    <path d="M 1020 40 Q 1050 20 1080 30 Q 1120 15 1150 35 Q 1180 50 1160 75 Q 1100 85 1030 70 Z"/>
+  </g>
+
+  <!-- Distant Snow-capped Mountains -->
+  <polygon points="360,420 450,220 540,420" fill="#84cc16"/>
+  <polygon points="450,220 472,270 450,260 428,270" fill="#ffffff"/>
+  <polygon points="620,440 730,190 840,440" fill="#a3e635"/>
+  <polygon points="730,190 758,250 730,235 702,250" fill="#ffffff"/>
+  <polygon points="900,450 990,260 1080,450" fill="#84cc16"/>
+  <polygon points="990,260 1012,310 990,300 968,310" fill="#ffffff"/>
+
+  <!-- Rolling Hills -->
+  <path d="M -50 480 Q 200 370 450 430 Q 700 490 950 410 Q 1100 370 1250 420 L 1250 800 L -50 800 Z" fill="url(#hillGradBack)"/>
+  <path d="M -50 510 Q 300 430 650 480 Q 950 430 1250 500 L 1250 800 L -50 800 Z" fill="url(#hillGradFront)"/>
+
+  <!-- Stream -->
+  <path d="M 1050 435 Q 600 460 300 490 Q 100 510 -50 530 L -50 550 Q 100 530 300 510 Q 600 480 1050 450 Z" fill="url(#streamGrad)" opacity="0.9"/>
+
+  <!-- Wooden Arch Bridge -->
+  <g transform="translate(150, 485)">
+    <path d="M 0 25 Q 40 5 80 25 L 80 32 Q 40 12 0 32 Z" fill="#78350f"/>
+    <path d="M 2 23 Q 40 3 78 23 L 78 27 Q 40 7 2 27 Z" fill="#b45309"/>
+    <path d="M 5 22 Q 40 2 75 22" stroke="#5a3818" stroke-width="3" fill="none"/>
+    <line x1="10" y1="22" x2="10" y2="12" stroke="#5a3818" stroke-width="2"/>
+    <line x1="28" y1="16" x2="28" y2="6" stroke="#5a3818" stroke-width="2"/>
+    <line x1="52" y1="16" x2="52" y2="6" stroke="#5a3818" stroke-width="2"/>
+    <line x1="70" y1="22" x2="70" y2="12" stroke="#5a3818" stroke-width="2"/>
+    <path d="M 5 12 Q 40 -8 75 12" stroke="#78350f" stroke-width="3" fill="none"/>
+  </g>
+
+  <!-- Winding Paths -->
+  <path d="M 1050 435 C 850 440, 500 460, 350 490 C 200 520, 50 530, -50 560 L -50 620 C 100 580, 400 560, 600 530 C 900 490, 1100 460, 1250 460 L 1250 435 Z" fill="url(#pathGrad)" opacity="0.75"/>
+
+  <!-- Red Barn -->
+  <g transform="translate(40, 230)">
+    <rect x="220" y="70" width="22" height="40" fill="#a0421b" rx="2"/>
+    <rect x="216" y="66" width="30" height="8" fill="#78350f" rx="2"/>
+    <polygon points="20,120 140,80 140,240 20,240" fill="#b94a24"/>
+    <rect x="20" y="120" width="230" height="120" fill="#c25329" rx="4"/>
+    <polygon points="5,125 135,50 265,125 255,135 135,68 15,135" fill="#facc15"/>
+    <polygon points="10,125 135,55 260,125 250,132 135,70 20,132" fill="#eab308"/>
+    <circle cx="135" cy="100" r="16" fill="#fef08a" stroke="#78350f" stroke-width="4"/>
+    <line x1="135" y1="84" x2="135" y2="116" stroke="#78350f" stroke-width="3"/>
+    <line x1="119" y1="100" x2="151" y2="100" stroke="#78350f" stroke-width="3"/>
+    <rect x="40" y="150" width="80" height="90" fill="#60280b" rx="4"/>
+    <rect x="45" y="155" width="70" height="85" fill="#78350f" rx="2"/>
+    <path d="M 45 155 L 115 240 M 115 155 L 45 240" stroke="#fde047" stroke-width="3"/>
+  </g>
+
+  <!-- Yellow Farmhouse -->
+  <g transform="translate(480, 140)">
+    <polygon points="10,210 180,210 190,270 0,270" fill="#78716c"/>
+    <rect x="20" y="90" width="150" height="120" fill="#facc15" rx="2"/>
+    <polygon points="5,95 95,10 185,95 175,105 95,25 15,105" fill="#ef4444"/>
+    <polygon points="10,95 95,15 180,95" fill="#dc2626"/>
+    <path d="M 80 58 A 15 15 0 0 1 110 58 Z" fill="#38bdf8" stroke="#78350f" stroke-width="3"/>
+    <rect x="65" y="68" width="60" height="22" fill="#a16207" rx="3"/>
+    <rect x="40" y="115" width="22" height="32" fill="#38bdf8" stroke="#ef4444" stroke-width="3" rx="2"/>
+    <rect x="70" y="115" width="22" height="32" fill="#38bdf8" stroke="#ef4444" stroke-width="3" rx="2"/>
+    <rect x="125" y="150" width="35" height="60" fill="#78350f" rx="3"/>
+  </g>
+
+  <!-- Animated Windmill -->
+  <g transform="translate(1020, 120)">
+    <polygon points="40,260 58,110 72,110 90,260" fill="#78350f"/>
+    <polygon points="44,250 59,120 71,120 86,250" fill="#a16207"/>
+    <circle cx="65" cy="110" r="10" fill="#d97706" stroke="#451a03" stroke-width="2"/>
+    <g class="windmill-blades">
+      <path d="M 65 110 L 57 30 L 73 30 Z" fill="#eab308" stroke="#78350f"/>
+      <path d="M 65 110 L 145 102 L 145 118 Z" fill="#ca8a04" stroke="#78350f"/>
+      <path d="M 65 110 L 73 190 L 57 190 Z" fill="#eab308" stroke="#78350f"/>
+      <path d="M 65 110 L -15 118 L -15 102 Z" fill="#ca8a04" stroke="#78350f"/>
+      <circle cx="65" cy="110" r="8" fill="#78350f"/>
+    </g>
+  </g>
+</svg>
+</div>
+
+<!-- ================= 1. SPLASH SCREEN (TAMPILAN AWAL) ================= -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-card">
+    <div class="text-xs font-extrabold uppercase tracking-widest text-amber-900 mb-1">🌾 Interactive Learning Media 🌾</div>
+    <div class="splash-title-box">
+      <h1>Media Pembelajaran Interaktif ROTASI kelas 9 SMP</h1>
+    </div>
+    
+    <div class="my-6">
+      <button id="btn-play-start" class="play-btn">
+        <span>PLAY</span>
+        <span>▶</span>
+      </button>
+    </div>
+    
+    <div class="flex justify-center items-center gap-2 mt-4">
+      <button id="btn-audio-splash" onclick="toggleAudio()" class="btn-farm text-xs py-1 px-3">
+        🔊 Musik: AKTIF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 2. DASHBOARD PEMBELAJARAN ================= -->
+<div id="screen-dashboard" class="screen">
+  <div class="dash-header mt-4">
+    <h2>🌾 Dashboard Pembelajaran 🌾</h2>
+    <div class="text-xs text-amber-200 font-bold mt-1">Pilih modul pembelajaran rotasi di bawah ini:</div>
+  </div>
+
+  <div class="dash-grid">
+    <!-- Card 1 -->
+    <div class="dash-card" onclick="openModule(0)">
+      <div class="icon-box">🎡</div>
+      <h3>1. Konsep & Bianglala</h3>
+      <p>Memahami konsep rotasi melalui bianglala hewan peternakan.</p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="dash-card" onclick="openModule(1)">
+      <div class="icon-box">🧭</div>
+      <h3>2. Jelajah</h3>
+      <p>Eksplorasi rotasi titik & bangun kustom serta pembuktian kekongruenan.</p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="dash-card" onclick="openModule(2)">
+      <div class="icon-box">🔄</div>
+      <h3>3. Geser-Putar-Geser</h3>
+      <p>Langkah demi langkah memahami rotasi dengan pusat P(a, b).</p>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="dash-card" onclick="openModule(3)">
+      <div class="icon-box">🎯</div>
+      <h3>4. Tantangan</h3>
+      <p>Kuis interaktif menebak bayangan hasil rotasi & kumpulkan skor!</p>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="dash-card" onclick="openModule(4)">
+      <div class="icon-box">🧪</div>
+      <h3>5. GeoGebra Mandiri</h3>
+      <p>Praktikum langsung menggunakan GeoGebra interaktif.</p>
+    </div>
+  </div>
+
+  <button class="btn-back-dash" onclick="openSplash()">
+    <span>🏠</span> Kembali ke Layar Utama
+  </button>
+</div>
+
+<!-- ================= 3. MODULE CONTENT CONTAINER ================= -->
+<div id="screen-module" class="screen">
+  <div class="app-container">
+    <header>
+      <button class="btn-back-dash" onclick="openDashboard()">
+        <span>⬅</span> Kembali ke Dashboard
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-audio-nav" onclick="toggleAudio()" class="btn-farm pri text-xs py-1 px-2">
+          🔊 Musik
+        </button>
+        <nav id="nav-tabs"></nav>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <!-- TAB 1: Konsep & Bianglala -->
+      <section class="sec hidden" id="s0">
+        <div class="row">
+          <div class="cvwrap">
+            <canvas id="cw"></canvas>
+          </div>
+          <div class="panel">
+            <div class="card">
+              <h3>🎡 Masalah Bianglala Peternakan</h3>
+              <p class="text-sm">Kabin bergerak mengelilingi pusat roda dengan jarak tetap. Setiap rotasi memiliki <b>pusat rotasi</b>, <b>sudut rotasi</b>, dan <b>arah rotasi</b>.</p>
+              <div class="ctl mt-2">
+                <button id="wp" class="btn-farm pri" onclick="setWDir(1)">Arah + (Berlawanan Jarum Jam)</button>
+                <button id="wn" class="btn-farm" onclick="setWDir(-1)">Arah − (Searah Jarum Jam)</button>
+                <button id="wz" class="btn-farm" onclick="toggleWRun()">⏸ Jeda</button>
+              </div>
+              <p class="big mt-2">Sudut Putaran: <span id="wang" class="ac">0°</span></p>
+            </div>
+            <div class="card">
+              <h3>📐 Konvensi Sudut Rotasi</h3>
+              <div class="my-1 flex flex-wrap gap-2">
+                <span class="pill">+ Berlawanan arah jarum jam</span>
+                <span class="pill">− Searah jarum jam</span>
+              </div>
+              <p class="text-xs mt-1">Kesetaraan: <b>+90° ≡ −270°</b> dan <b>+270° ≡ −90°</b> (selisih 360°, menghasilkan posisi bayangan yang sama).</p>
+            </div>
+            <div class="card">
+              <h3>📋 Aturan Rotasi Pusat O(0, 0)</h3>
+              <table>
+                <tr><td><b>+90° (atau −270°)</b></td><td>(x, y) → (−y, x)</td></tr>
+                <tr><td><b>180° (atau −180°)</b></td><td>(x, y) → (−x, −y)</td></tr>
+                <tr><td><b>+270° (atau −90°)</b></td><td>(x, y) → (y, −x)</td></tr>
+              </table>
+            </div>
+            <div class="card">
+              <h3>✨ Sifat Rotasi</h3>
+              <p class="text-sm">Bentuk dan ukuran bangun <b>tetap sama (kongruen)</b>; hanya posisi dan arah hadap bangun yang <b>berubah</b>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: Jelajah -->
+      <section class="sec hidden" id="s1">
+        <div class="row">
+          <div class="cvwrap">
+            <canvas id="ce"></canvas>
+          </div>
+          <div class="panel">
+            <div class="card">
+              <h3>🧭 1. Eksplorasi Rotasi Bangun Datar</h3>
+              <div class="ctl">Pilih Bangun: <span id="eshp" class="flex flex-wrap gap-1"></span></div>
+              
+              <div class="font-bold text-xs text-amber-900 mt-2">Koordinat Titik Semula (Dapat diubah pada HP):</div>
+              <div id="ecoord_box" class="coord-box"></div>
+
+              <div class="ctl">
+                Pusat P(a, b) ➜ a: 
+                <button class="btn-farm" onclick="adjE('a',-1)">−</button><b id="ea">0</b><button class="btn-farm" onclick="adjE('a',1)">+</button>
+                &nbsp; b: 
+                <button class="btn-farm" onclick="adjE('b',-1)">−</button><b id="eb">0</b><button class="btn-farm" onclick="adjE('b',1)">+</button>
+              </div>
+              <div class="ctl">
+                <button class="btn-farm" onclick="setEAng(90)">+90°</button>
+                <button class="btn-farm" onclick="setEAng(180)">180°</button>
+                <button class="btn-farm" onclick="setEAng(270)">+270°</button>
+                <button class="btn-farm" onclick="setEAng(-90)">−90°</button>
+                <button class="btn-farm" onclick="setEAng(-270)">−270°</button>
+                <button class="btn-farm" onclick="setEAng(0)">0°</button>
+              </div>
+              <input type="range" id="esl" min="-360" max="360" step="15" value="0" aria-label="Sudut">
+              <div class="ctl">
+                <button id="eanim" class="btn-farm pri">▶ Animasikan Rotasi</button>
+                <label class="font-bold text-amber-900 cursor-pointer ml-2 text-xs flex items-center gap-1">
+                  <input type="checkbox" id="etr" checked> Tampilkan Jejak Arc
+                </label>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Sudut Rotasi: <span id="eang" class="im">0°</span></h3>
+              <div id="eeq" class="mut"></div>
+              <div id="erule" class="big mt-1 text-amber-950"></div>
+            </div>
+            <div class="card">
+              <h3>Tabel Koordinat Bayangan & Pembuktian Kekongruenan</h3>
+              <div id="etab"></div>
+              <div id="econg" class="mut mt-2 p-2 bg-amber-100/60 border border-amber-300 rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: Geser-putar-geser -->
+      <section class="sec hidden" id="s2">
+        <div class="row">
+          <div class="cvwrap">
+            <canvas id="cs"></canvas>
+          </div>
+          <div class="panel">
+            <div class="card">
+              <h3>🔄 Metode 4 Langkah: Geser - Putar - Geser Balik</h3>
+              <div class="ctl">Bangun: <span id="sshp" class="flex flex-wrap gap-1"></span></div>
+              
+              <div class="font-bold text-xs text-amber-900 mt-2">Koordinat Titik Semula:</div>
+              <div id="scoord_box" class="coord-box"></div>
+
+              <div class="ctl">
+                Pusat P(a, b) ➜ a: 
+                <button class="btn-farm" onclick="adjS('a',-1)">−</button><b id="sa">2</b><button class="btn-farm" onclick="adjS('a',1)">+</button>
+                &nbsp; b: 
+                <button class="btn-farm" onclick="adjS('b',-1)">−</button><b id="sb">1</b><button class="btn-farm" onclick="adjS('b',1)">+</button>
+              </div>
+              <div class="ctl">
+                Sudut: 
+                <button class="btn-farm" onclick="setSAng(90)">90°</button>
+                <button class="btn-farm" onclick="setSAng(180)">180°</button>
+                <button class="btn-farm" onclick="setSAng(270)">270°</button>
+              </div>
+              <div class="steps mt-2" id="sbtn"></div>
+            </div>
+            <div class="card">
+              <h3 id="stt">Langkah Rotasi</h3>
+              <div id="stx" style="font-size: 0.92rem; line-height: 1.5;"></div>
+            </div>
+            <div class="card">
+              <h3>Rumus Rotasi Pusat P(a, b)</h3>
+              <div id="sfm" class="big text-sky-700"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: Tantangan -->
+      <section class="sec hidden" id="s3">
+        <div class="row">
+          <div class="cvwrap">
+            <canvas id="cc"></canvas>
+          </div>
+          <div class="panel">
+            <div class="card">
+              <h3>🎯 Tantangan: Klik Grid untuk Menebak Bayangan</h3>
+              <div class="ctl">
+                <button id="l1" class="btn-farm on" onclick="setLvl(1)">Level 1 · Pusat O(0,0)</button>
+                <button id="l2" class="btn-farm" onclick="setLvl(2)">Level 2 · Pusat P(a,b)</button>
+              </div>
+              <p id="cq" class="big my-2 text-sm leading-relaxed"></p>
+              <p class="mut">Sentuh/klik titik di koordinat kartesius untuk memilih dugaanmu, lalu tekan Uji Dugaan.</p>
+              <div class="ctl">
+                <button id="cchk" class="btn-farm pri" onclick="checkAnswer()">Uji Dugaan</button>
+                <button id="chint" class="btn-farm" onclick="showHint()">💡 Petunjuk</button>
+                <button id="cnew" class="btn-farm" onclick="newQ()">Soal Baru ➜</button>
+              </div>
+            </div>
+            <div class="card">
+              <div id="cfb" class="big">Belum ada dugaan.</div>
+              <div id="chn" class="mut mt-2"></div>
+            </div>
+            <div class="card">
+              <h3>🏆 Skor Kamu</h3>
+              <span id="csc" class="big text-emerald-700">0 benar dari 0</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: GeoGebra Mandiri -->
+      <section class="sec hidden" id="s4">
+        <div class="row">
+          <div class="w-full lg:w-2/3">
+            <iframe id="ggb" title="GeoGebra Interactive" src="https://www.geogebra.org/classic?embed" allowfullscreen></iframe>
+          </div>
+          <div class="panel">
+            <div class="card">
+              <h3>🧪 Eksplorasi Mandiri dengan GeoGebra</h3>
+              <ol style="margin:0; padding-left:1.2em; line-height:1.6; font-size:0.9rem;">
+                <li><b>Prediksi</b>: Tuliskan dugaan koordinat bayangan di catatanmu.</li>
+                <li><b>Simulasi</b>: Buat titik, pusat rotasi, dan slider sudut di GeoGebra.</li>
+                <li><b>Verifikasi</b>: Periksa apakah bayangan sesuai dengan rumusan matematis.</li>
+              </ol>
+            </div>
+            <div class="card">
+              <h3>💻 Perintah Siap Pakai GeoGebra</h3>
+              <p class="text-xs mb-1">Klik tombol di bawah untuk menyalin perintah ke clipboard:</p>
+              <div class="flex flex-col gap-2 my-2">
+                <button onclick="copyCmd('A=(3,2)')" class="btn-farm text-left font-mono text-xs py-1 px-2">📋 A=(3,2)</button>
+                <button onclick="copyCmd('P=(1,1)')" class="btn-farm text-left font-mono text-xs py-1 px-2">📋 P=(1,1)</button>
+                <button onclick="copyCmd('a=Slider(-360°,360°,15°)')" class="btn-farm text-left font-mono text-xs py-1 px-2">📋 a=Slider(-360°,360°,15°)</button>
+                <button onclick="copyCmd('A\'=Rotate(A,a,P)')" class="btn-farm text-left font-mono text-xs py-1 px-2">📋 A'=Rotate(A,a,P)</button>
+              </div>
+              <div id="copy-toast" class="text-xs text-emerald-700 font-bold hidden">Perintah berhasil disalin!</div>
+            </div>
+            <div class="card">
+              <h3>📂 Muat Berkas GeoGebra Custom</h3>
+              <div class="ctl">
+                <input type="text" id="gin" placeholder="Tempel ID GeoGebra">
+                <button id="gload" class="btn-farm pri" onclick="loadGgb()">Muat Material</button>
+              </div>
+              <div class="ctl">
+                <button class="btn-farm" onclick="gset('https://www.geogebra.org/classic?embed')">GeoGebra Classic</button>
+                <button class="btn-farm" onclick="gset('https://www.geogebra.org/geometry?embed')">Geometri</button>
+              </div>
+              <div class="ctl mt-2">
+                <a class="btn-link text-xs" id="gopen" href="https://www.geogebra.org/classic" target="_blank" rel="noopener">↗ Buka di Tab Baru</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+/* ================= AUDIO SYNTHESIZER ENGINE ================= */
+let audioCtx = null;
+let isMuted = false;
+let isBgmPlaying = false;
+const bgmAudio = new Audio('what_you_know.mp3'); 
+bgmAudio.loop = true;   // Mengaktifkan pengulangan musik secara berulang
+bgmAudio.volume = 0.4;
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function playWoodClick() {
+  if (isMuted) return;
+  try {
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(240, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.04);
+    gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.04);
+  } catch(e){}
+}
+
+function playFarmChime() {
+  if (isMuted) return;
+  try {
+    initAudio();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.25);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + idx * 0.08);
+      osc.stop(audioCtx.currentTime + idx * 0.08 + 0.25);
+    });
+  } catch(e){}
+}
+
+function playCorrectSound() {
+  if (isMuted) return;
+  try {
+    initAudio();
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.09);
+      gain.gain.setValueAtTime(0.25, audioCtx.currentTime + i * 0.09);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.09 + 0.2);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(audioCtx.currentTime + i * 0.09);
+      osc.stop(audioCtx.currentTime + i * 0.09 + 0.2);
+    });
+  } catch(e){}
+}
+
+function playWrongSound() {
+  if (isMuted) return;
+  try {
+    initAudio();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+    osc.frequency.linearRampToValueAtTime(90, audioCtx.currentTime + 0.25);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.25);
+  } catch(e){}
+}
+
+const bgmNotes = [
+  261.63, 329.63, 392.00, 329.63,
+  293.66, 349.23, 392.00, 349.23,
+  329.63, 392.00, 523.25, 392.00,
+  392.00, 349.23, 329.63, 293.66
+];
+
+function playBgmNote() {
+  if (isMuted || !isBgmPlaying) return;
+  try {
+    initAudio();
+    const freq = bgmNotes[bgmStep % bgmNotes.length];
+    bgmStep++;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.22);
+  } catch(e){}
+}
+
+function startBgm() {
+ if (isMuted) return;
+  isBgmPlaying = true;
+  bgmAudio.play().catch(err => {
+    console.log("Audio otomatis diblokir browser sebelum ada interaksi pengguna:", err);
+  });
+}
+
+function stopBgm() {
+  isBgmPlaying = false;
+  bgmAudio.pause();
+}
+
+function toggleAudio() {
+  isMuted = !isMuted;
+  const btn1 = document.getElementById('btn-audio-splash');
+  const btn2 = document.getElementById('btn-audio-nav');
+  if (isMuted) {
+    stopBgm();
+    if (btn1) btn1.innerHTML = '🔇 Musik: MATI';
+    if (btn2) btn2.innerHTML = '🔇 Musik';
+  } else {
+    startBgm();
+    if (btn1) btn1.innerHTML = '🔊 Musik: AKTIF';
+    if (btn2) btn2.innerHTML = '🔊 Musik';
+  }
+}
+
+/* ================= NAVIGATION & VIEW SWITCHING ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+
+function showScreen(id) {
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $(`#screen-${id}`).classList.add('active');
+}
+
+function openSplash() {
+  playWoodClick();
+  showScreen('splash');
+}
+
+function openDashboard() {
+  playWoodClick();
+  showScreen('dashboard');
+}
+
+function openModule(idx) {
+  playWoodClick();
+  showScreen('module');
+  showTab(idx);
+}
+
+/* Tab Switching inside Module */
+const tabs = [
+  "🎡 1. Konsep", 
+  "🧭 2. Jelajah", 
+  "🔄 3. Geser-Putar", 
+  "🎯 4. Tantangan", 
+  "🧪 5. GeoGebra"
+];
+
+tabs.forEach((t, i) => {
+  const b = document.createElement("button");
+  b.className = "tab-btn" + (i === 0 ? " on" : "");
+  b.textContent = t;
+  b.onclick = () => {
+    playWoodClick();
+    showTab(i);
+  };
+  $("#nav-tabs").append(b);
+});
+
+let curTab = 0;
+function showTab(i) {
+  curTab = i;
+  $$(".sec").forEach((s, j) => s.classList.toggle("hidden", i !== j));
+  $$("#nav-tabs button").forEach((b, j) => b.classList.toggle("on", i === j));
+  redraw();
+}
+
+function redraw() {
+  [drawW, drawE, drawS, drawC, () => {}][curTab]();
+}
+window.addEventListener("resize", redraw);
+
+/* ================= MATH & HELPER FUNCTIONS ================= */
+const safeNum = n => (typeof n === 'number' && !isNaN(n)) ? n : 0;
+
+const N = n => { 
+  if (n === undefined || n === null || isNaN(n)) return "0";
+  const num = Math.round(Number(n) * 100) / 100 + 0; 
+  return String(num).replace("-", "−"); 
+};
+
+const P = p => {
+  if (!p) return "(0, 0)";
+  const x = Array.isArray(p) ? p[0] : (p.x !== undefined ? p.x : 0);
+  const y = Array.isArray(p) ? p[1] : (p.y !== undefined ? p.y : 0);
+  return "(" + N(x) + ", " + N(y) + ")";
+};
+
+const rot = (p, c = [0, 0], d = 0) => {
+  if (!p) return [0, 0];
+  const px = Array.isArray(p) ? p[0] : (p.x ?? 0);
+  const py = Array.isArray(p) ? p[1] : (p.y ?? 0);
+  const cx = Array.isArray(c) ? c[0] : (c.x ?? 0);
+  const cy = Array.isArray(c) ? c[1] : (c.y ?? 0);
+  const t = (d || 0) * Math.PI / 180, co = Math.cos(t), si = Math.sin(t);
+  const x = px - cx, y = py - cy;
+  return [cx + x * co - y * si, cy + x * si + y * co];
+};
+
+const rd = p => [
+  Math.round((p && p[0] !== undefined ? p[0] : 0) * 1e6) / 1e6, 
+  Math.round((p && p[1] !== undefined ? p[1] : 0) * 1e6) / 1e6
+];
+
+const L = ["A", "B", "C", "D"];
+const angTxt = a => {
+  const v = safeNum(a);
+  return (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v) + "°";
+};
+
+/* ================= CANVAS RENDER ENGINE ================= */
+function base(cv) {
+  if (!cv) return null;
+  const d = window.devicePixelRatio || 1;
+  const rect = cv.getBoundingClientRect();
+  const w = Math.max(200, Math.round(rect.width * d));
+  const h = Math.max(200, Math.round(rect.height * d));
+  if (cv.width !== w || cv.height !== h) {
+    cv.width = w;
+    cv.height = h;
+  }
+  
+  const ctx = cv.getContext("2d");
+  const s = Math.min(w, h);
+  const u = s / 22;
+  const X = x => w / 2 + x * u;
+  const Y = y => h / 2 - y * u;
+  
+  ctx.fillStyle = "#fbf6e9";
+  ctx.fillRect(0, 0, w, h);
+  ctx.lineWidth = 1;
+  
+  // Grid Lines
+  for (let i = -10; i <= 10; i++) {
+    ctx.strokeStyle = "#e5d5b7";
+    ctx.beginPath();
+    ctx.moveTo(X(i), Y(-11)); ctx.lineTo(X(i), Y(11));
+    ctx.moveTo(X(-11), Y(i)); ctx.lineTo(X(11), Y(i));
+    ctx.stroke();
+  }
+  
+  // Main Axes
+  ctx.strokeStyle = "#5a3818";
+  ctx.lineWidth = 2.5 * d;
+  ctx.beginPath();
+  ctx.moveTo(X(-11), Y(0)); ctx.lineTo(X(11), Y(0));
+  ctx.moveTo(X(0), Y(-11)); ctx.lineTo(X(0), Y(11));
+  ctx.stroke();
+  
+  // Axis Labels
+  ctx.fillStyle = "#3d2005";
+  ctx.font = "bold " + (u * 0.52) + "px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  for (let i = -10; i <= 10; i += 2) {
+    if (i) {
+      ctx.fillText(N(i), X(i), Y(0) + u * 0.85);
+      ctx.fillText(N(i), X(0) - u * 0.7, Y(i) + u * 0.22);
+    }
+  }
+  return { ctx, X, Y, u, d, s, w, h };
+}
+
+function drawPoint(g, p, label = "", col = "#3d2005", radius = 0.22) {
+  if (!g || !p) return;
+  const { ctx, X, Y, u } = g;
+  const x = Array.isArray(p) ? p[0] : (p.x !== undefined ? p.x : 0);
+  const y = Array.isArray(p) ? p[1] : (p.y !== undefined ? p.y : 0);
+
+  ctx.save();
+  ctx.fillStyle = col;
+  ctx.strokeStyle = col;
+  ctx.beginPath();
+  ctx.arc(X(x), Y(y), u * radius, 0, Math.PI * 2);
+  ctx.fill();
+  if (label) {
+    ctx.font = "bold " + (u * 0.75) + "px system-ui, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(String(label), X(x) + u * 0.3, Y(y) - u * 0.3);
+  }
+  ctx.restore();
+}
+
+function poly(g, pts, col, o = {}) {
+  if (!g || !pts || !Array.isArray(pts)) return;
+  const { ctx, X, Y, d } = g;
+  ctx.save();
+  ctx.globalAlpha = o.a || 1;
+  ctx.strokeStyle = col;
+  ctx.fillStyle = col;
+  ctx.lineWidth = 3.5 * (d || 1);
+  if (o.dash) ctx.setLineDash([8 * (d || 1), 6 * (d || 1)]);
+  
+  const validPts = pts.filter(p => p && Array.isArray(p) && !isNaN(p[0]) && !isNaN(p[1]));
+
+  if (validPts.length > 1) {
+    ctx.beginPath();
+    validPts.forEach((p, i) => i ? ctx.lineTo(X(p[0]), Y(p[1])) : ctx.moveTo(X(p[0]), Y(p[1])));
+    ctx.closePath();
+    ctx.globalAlpha = (o.a || 1) * 0.2;
+    ctx.fill();
+    ctx.globalAlpha = o.a || 1;
+    ctx.stroke();
+  }
+  
+  ctx.setLineDash([]);
+  validPts.forEach((p, i) => {
+    drawPoint(g, p, o.lab !== undefined ? L[i] + o.lab : undefined, col, 0.22);
+  });
+  ctx.restore();
+}
+
+function center(g, c, t) {
+  if (!g || !c) return;
+  const { ctx, X, Y, u } = g;
+  const cx = Array.isArray(c) ? c[0] : (c.x ?? 0);
+  const cy = Array.isArray(c) ? c[1] : (c.y ?? 0);
+
+  ctx.save();
+  ctx.fillStyle = "#3d2005";
+  ctx.beginPath();
+  ctx.arc(X(cx), Y(cy), u * 0.28, 0, 7);
+  ctx.fill();
+  ctx.font = "bold " + (u * 0.78) + "px system-ui, sans-serif";
+  ctx.fillText(t || "P", X(cx) + u * 0.38, Y(cy) + u * 0.9);
+  ctx.restore();
+}
+
+function arcs(g, pts, c, ang, col) {
+  if (!g || !pts || !c) return;
+  const { ctx, X, Y, u, d } = g;
+  const cx = Array.isArray(c) ? c[0] : (c.x ?? 0);
+  const cy = Array.isArray(c) ? c[1] : (c.y ?? 0);
+
+  ctx.save();
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 2.5 * (d || 1);
+  ctx.setLineDash([6 * (d || 1), 6 * (d || 1)]);
+  pts.forEach(p => {
+    if (!p) return;
+    const px = Array.isArray(p) ? p[0] : (p.x ?? 0);
+    const py = Array.isArray(p) ? p[1] : (p.y ?? 0);
+    const r = Math.hypot(px - cx, py - cy);
+    if (!r || !ang) return;
+    const a0 = Math.atan2(py - cy, px - cx), a1 = a0 + ang * Math.PI / 180;
+    ctx.beginPath();
+    ctx.arc(X(cx), Y(cy), r * u, -a0, -a1, ang > 0);
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+const cname = c => {
+  if (!c) return "O(0, 0)";
+  const cx = Array.isArray(c) ? c[0] : (c.x ?? 0);
+  const cy = Array.isArray(c) ? c[1] : (c.y ?? 0);
+  return cx == 0 && cy == 0 ? "O(0, 0)" : "P" + P(c);
+};
+
+/* Master Shapes */
+const SH = { 
+  "Titik": [[3, 2]], 
+  "Segitiga": [[2, 1], [5, 1], [2, 4]], 
+  "Persegi": [[1, 1], [4, 1], [4, 4], [1, 4]] 
+};
+
+/* ================= 0. KONSEP & BIANGLALA ================= */
+const farmIcons = ["🐔", "🐄", "🐑", "🐖", "🐥", "🐮", "🐰", "🚜"];
+let wa = 0, wd = 1, wrun = true;
+
+function setWDir(d) {
+  playWoodClick();
+  wd = d;
+  wrun = true;
+}
+
+function toggleWRun() {
+  playWoodClick();
+  wrun = !wrun;
+  $("#wz").textContent = wrun ? "⏸ Jeda" : "▶ Lanjut";
+}
+
+function drawW() {
+  const cv = $("#cw");
+  if (!cv) return;
+  const g = base(cv);
+  if (!g) return;
+  const { ctx, X, Y, u, d } = g, R = 6.5, c = [0, 0];
+  
+  ctx.save();
+  ctx.strokeStyle = "#8c5828";
+  ctx.lineWidth = 6 * d;
+  ctx.beginPath();
+  ctx.arc(X(0), Y(0), R * u, 0, Math.PI * 2);
+  ctx.stroke();
+  
+  ctx.strokeStyle = "#d4a359";
+  ctx.lineWidth = 3 * d;
+  ctx.beginPath();
+  ctx.arc(X(0), Y(0), (R - 0.5) * u, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = "#5a3818";
+  ctx.lineWidth = 7 * d;
+  ctx.beginPath();
+  ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(-5), Y(-10));
+  ctx.moveTo(X(0), Y(0)); ctx.lineTo(X(5), Y(-10));
+  ctx.stroke();
+
+  ctx.strokeStyle = "#78350f";
+  ctx.lineWidth = 3 * d;
+  for (let i = 0; i < 8; i++) {
+    const p = rot([R, 0], c, wa + i * 45);
+    ctx.beginPath();
+    ctx.moveTo(X(0), Y(0));
+    ctx.lineTo(X(p[0]), Y(p[1]));
+    ctx.stroke();
+  }
+
+  for (let i = 0; i < 8; i++) {
+    const p = rot([R, 0], c, wa + i * 45);
+    ctx.fillStyle = "#b45309";
+    ctx.beginPath();
+    ctx.arc(X(p[0]), Y(p[1]) + u * 0.2, u * 0.65, 0, Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = "#451a03";
+    ctx.lineWidth = 2 * d;
+    ctx.stroke();
+
+    ctx.font = (u * 0.85) + "px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(farmIcons[i], X(p[0]), Y(p[1]) - u * 0.15);
+  }
+  ctx.restore();
+
+  arcs(g, [[R, 0]], c, wa, "#ea580c");
+  center(g, c, "O");
+  $("#wang").textContent = angTxt(Math.round(wa)) + " (" + (wd > 0 ? "berlawanan" : "searah") + " jarum jam)";
+}
+
+let last = 0;
+(function loop(t) {
+  const dt = Math.min(0.05, (t - last) / 1000 || 0);
+  last = t;
+  if (wrun) {
+    wa += wd * 30 * dt;
+    if (wa > 720 || wa < -720) wa = 0;
+  }
+  if (curTab === 0) drawW();
+  requestAnimationFrame(loop);
+})(0);
+
+/* ================= 1. JELAJAH ================= */
+let E = { 
+  sh: "Segitiga", 
+  pts: JSON.parse(JSON.stringify(SH["Segitiga"])), 
+  a: 0, 
+  b: 0, 
+  ang: 0 
+};
+
+Object.keys(SH).forEach(k => {
+  const b = document.createElement("button");
+  b.className = "btn-farm";
+  b.textContent = k;
+  b.dataset.sh = k;
+  b.onclick = () => { 
+    playWoodClick();
+    E.sh = k; 
+    E.pts = JSON.parse(JSON.stringify(SH[k]));
+    renderEInputs();
+    drawE(); 
+  };
+  $("#eshp").append(b);
+});
+
+function toggleSignE(idx, axis) {
+  playWoodClick();
+  E.pts[idx][axis] = -E.pts[idx][axis];
+  renderEInputs();
+  drawE();
+}
+
+function renderEInputs() {
+  const box = $("#ecoord_box");
+  box.innerHTML = "";
+  E.pts.forEach((p, i) => {
+    const row = document.createElement("div");
+    row.className = "coord-row";
+    row.innerHTML = `
+      <label>${L[i]}:</label>
+      <div class="coord-input-wrap">
+        <button class="btn-sign" onclick="toggleSignE(${i}, 0)">±</button>
+        x = <input type="text" data-idx="${i}" data-axis="0" value="${p[0]}" inputmode="numeric">
+      </div>
+      <div class="coord-input-wrap">
+        <button class="btn-sign" onclick="toggleSignE(${i}, 1)">±</button>
+        y = <input type="text" data-idx="${i}" data-axis="1" value="${p[1]}" inputmode="numeric">
+      </div>
+    `;
+    box.appendChild(row);
+  });
+
+  $$("#ecoord_box input").forEach(inp => {
+    inp.oninput = e => {
+      const idx = +e.target.dataset.idx;
+      const axis = +e.target.dataset.axis;
+      const val = parseFloat(e.target.value.replace("−", "-"));
+      E.pts[idx][axis] = isNaN(val) ? 0 : val;
+      drawE();
+    };
+  });
+}
+
+function adjE(k, delta) {
+  playWoodClick();
+  E[k] = Math.max(-8, Math.min(8, E[k] + delta));
+  drawE();
+}
+
+function setEAng(ang) {
+  playWoodClick();
+  E.ang = ang;
+  drawE();
+}
+
+$("#esl").oninput = e => { E.ang = +e.target.value; drawE(); };
+$("#etr").onchange = () => { playWoodClick(); drawE(); };
+
+$("#eanim").onclick = () => {
+  playWoodClick();
+  const T = E.ang, t0 = performance.now();
+  const f = t => {
+    const k = Math.min(1, (t - t0) / 1800);
+    E.ang = T * k;
+    drawE();
+    if (k < 1) requestAnimationFrame(f);
+    else { E.ang = T; drawE(); }
+  };
+  if (T) requestAnimationFrame(f);
+};
+
+function rule(c, m) {
+  const a = c[0], b = c[1];
+  if (a == 0 && b == 0) return { 90: "(x, y) → (−y, x)", 180: "(x, y) → (−x, −y)", 270: "(x, y) → (y, −x)", 0: "bayangan = titik semula" }[m];
+  return { 90: "x′ = −y + b + a ; y′ = x − a + b", 180: "x′ = −x + 2a ; y′ = −y + 2b", 270: "x′ = y − b + a ; y′ = −x + a + b", 0: "bayangan = titik semula" }[m];
+}
+
+function drawE() {
+  const cv = $("#ce");
+  if (!cv) return;
+  const g = base(cv);
+  if (!g) return;
+
+  const c = [E.a, E.b], pts = E.pts || SH["Segitiga"], img = pts.map(p => rot(p, c, E.ang));
+  $$("#eshp button").forEach(b => b.classList.toggle("on", b.dataset.sh == E.sh));
+  $("#ea").textContent = N(E.a); $("#eb").textContent = N(E.b); $("#esl").value = E.ang;
+
+  if ($("#etr").checked) arcs(g, pts, c, E.ang, "#ea580c");
+  poly(g, pts, "#0284c7", { lab: "" });
+  poly(g, img, "#ea580c", { lab: "′" });
+  center(g, c, cname(c));
+
+  const m = ((Math.round(E.ang) % 360) + 360) % 360;
+  $("#eang").textContent = angTxt(Math.round(E.ang)) + (E.ang > 0 ? " (berlawanan jarum jam)" : E.ang < 0 ? " (searah jarum jam)" : "");
+  $("#eeq").textContent = m && Number.isInteger(E.ang) ? "Setara dengan " + angTxt(E.ang > 0 ? E.ang - 360 : E.ang + 360) : "";
+  $("#erule").textContent = m % 90 == 0 ? "Aturan: " + rule(c, m) : "Sudut umum: menggunakan perbandingan trigonometri sin & cos.";
+  $("#etab").innerHTML = "<table><tr><th>Titik</th><th>Semula</th><th class='im'>Bayangan</th></tr>" + pts.map((p, i) => `<tr><td><b>${L[i]}</b></td><td class="ac">${P(p)}</td><td class="im">${P(img[i])}</td></tr>`).join("") + "</table>";
+
+  /* Pembuktian Kekongruenan */
+  if (pts.length > 1) {
+    const d = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+    const d1 = d(pts[0], pts[1]), d2 = d(img[0], img[1]);
+    const isCongruent = Math.abs(d1 - d2) < 1e-5;
+    $("#econg").innerHTML = `
+      <div class="font-bold text-xs text-amber-900 mb-1">🔍 Pembuktian Kekongruenan:</div>
+      <div>Jarak A-B semula = <b>${N(d1)}</b> satuan</div>
+      <div>Jarak A′-B′ bayangan = <b>${N(d2)}</b> satuan</div>
+      <div class="mt-1">${isCongruent ? '<b class="ok">✔ TERBUKTI KONGRUEN (Ukuran & Bentuk Sama)</b>' : '<b class="bad">Tidak Kongruen</b>'}</div>
+    `;
+  } else {
+    $("#econg").textContent = "Pilih bentuk Segitiga/Persegi untuk verifikasi kekongruenan panjang sisi.";
+  }
+}
+
+/* ================= 2. GESER-PUTAR-GESER ================= */
+let S = { 
+  sh: "Segitiga", 
+  pts: JSON.parse(JSON.stringify(SH["Segitiga"])), 
+  a: 2, 
+  b: 1, 
+  ang: 90, 
+  st: 0 
+};
+
+const SN = ["Bangun Semula", "Geser ke O", "Putar di O", "Geser Balik ke P"];
+
+SN.forEach((t, i) => {
+  const b = document.createElement("button");
+  b.className = "btn-farm";
+  b.textContent = i + " · " + t;
+  b.onclick = () => { playWoodClick(); S.st = i; drawS(); };
+  $("#sbtn").append(b);
+});
+
+Object.keys(SH).forEach(k => {
+  const b = document.createElement("button");
+  b.className = "btn-farm";
+  b.textContent = k;
+  b.dataset.sh = k;
+  b.onclick = () => { 
+    playWoodClick();
+    S.sh = k; 
+    S.pts = JSON.parse(JSON.stringify(SH[k]));
+    renderSInputs();
+    drawS(); 
+  };
+  $("#sshp").append(b);
+});
+
+function toggleSignS(idx, axis) {
+  playWoodClick();
+  S.pts[idx][axis] = -S.pts[idx][axis];
+  renderSInputs();
+  drawS();
+}
+
+function renderSInputs() {
+  const box = $("#scoord_box");
+  box.innerHTML = "";
+  S.pts.forEach((p, i) => {
+    const row = document.createElement("div");
+    row.className = "coord-row";
+    row.innerHTML = `
+      <label>${L[i]}:</label>
+      <div class="coord-input-wrap">
+        <button class="btn-sign" onclick="toggleSignS(${i}, 0)">±</button>
+        x = <input type="text" data-idx="${i}" data-axis="0" value="${p[0]}" inputmode="numeric">
+      </div>
+      <div class="coord-input-wrap">
+        <button class="btn-sign" onclick="toggleSignS(${i}, 1)">±</button>
+        y = <input type="text" data-idx="${i}" data-axis="1" value="${p[1]}" inputmode="numeric">
+      </div>
+    `;
+    box.appendChild(row);
+  });
+
+  $$("#scoord_box input").forEach(inp => {
+    inp.oninput = e => {
+      const idx = +e.target.dataset.idx;
+      const axis = +e.target.dataset.axis;
+      const val = parseFloat(e.target.value.replace("−", "-"));
+      S.pts[idx][axis] = isNaN(val) ? 0 : val;
+      drawS();
+    };
+  });
+}
+
+function adjS(k, delta) {
+  playWoodClick();
+  S[k] = Math.max(-5, Math.min(5, S[k] + delta));
+  drawS();
+}
+
+function setSAng(ang) {
+  playWoodClick();
+  S.ang = ang;
+  drawS();
+}
+
+function drawS() {
+  const cv = $("#cs");
+  if (!cv) return;
+  const g = base(cv);
+  if (!g) return;
+
+  const c = [S.a ?? 2, S.b ?? 1];
+  const o = S.pts || SH["Segitiga"];
+  const t1 = o.map(p => [p[0] - c[0], p[1] - c[1]]);
+  const t2 = t1.map(p => rd(rot(p, [0, 0], S.ang || 0)));
+  const t3 = t2.map(p => [p[0] + c[0], p[1] + c[1]]);
+
+  $$("#sshp button").forEach(b => b.classList.toggle("on", b.dataset.sh == S.sh));
+  $$("#sbtn button").forEach((b, i) => b.classList.toggle("on", i == S.st));
+
+  const elSa = $("#sa"), elSb = $("#sb");
+  if (elSa) elSa.textContent = N(S.a);
+  if (elSb) elSb.textContent = N(S.b);
+
+  const st = S.st ?? 0, F = "#8c5828";
+  let txt = "";
+
+  if (st == 0) {
+    poly(g, o, "#0284c7", { lab: "" });
+    center(g, c, "P" + P(c));
+    txt = "Titik P(a, b) adalah pusat putaran. Perhatikan koordinat awal bangun.";
+  } else if (st == 1) {
+    poly(g, o, F, { a: 0.4, dash: 1 });
+    poly(g, t1, "#0284c7", { lab: "₁" });
+    center(g, [0, 0], "O");
+    center(g, c, "P");
+    txt = `Geser semua titik sebesar (−a, −b) = (${N(-S.a)}, ${N(-S.b)}) agar titik pusat P berhimpit di O(0,0).<br>` + o.map((p, i) => `${L[i]}${P(p)} → ${P(t1[i])}`).join("<br>");
+  } else if (st == 2) {
+    poly(g, t1, F, { a: 0.4, dash: 1 });
+    arcs(g, t1, [0, 0], S.ang, "#ea580c");
+    poly(g, t2, "#ea580c", { lab: "₂" });
+    center(g, [0, 0], "O");
+    txt = `Putar sebesar ${angTxt(S.ang)} terhadap titik asal O(0,0).<br>` + t1.map((p, i) => `${L[i]}${P(p)} → ${P(t2[i])}`).join("<br>");
+  } else if (st == 3) {
+    poly(g, o, F, { a: 0.4, dash: 1 });
+    poly(g, t2, F, { a: 0.3, dash: 1 });
+    poly(g, t3, "#15803d", { lab: "′" });
+    center(g, c, "P" + P(c));
+    txt = `Geser kembali sebesar (+a, +b) = (${N(S.a)}, ${N(S.b)}) ke posisi asal P.<br>` + t2.map((p, i) => `${L[i]}${P(p)} → ${L[i]}′${P(t3[i])}`).join("<br>");
+  }
+
+  $("#stt").textContent = "Langkah " + st + ": " + (SN[st] || "");
+  $("#stx").innerHTML = txt;
+  $("#sfm").innerHTML = ({
+    90: "x′ = −y + b + a<br>y′ = x − a + b",
+    180: "x′ = −x + 2a<br>y′ = −y + 2b",
+    270: "x′ = y − b + a<br>y′ = −x + a + b"
+  })[S.ang] || "";
+}
+
+/* ================= 3. TANTANGAN ================= */
+let C = { lv: 1, q: null, guess: null, done: false, sc: 0, tot: 0, hint: false };
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+
+function setLvl(lvl) {
+  playWoodClick();
+  C.lv = lvl;
+  newQ();
+}
+
+function newQ() {
+  playWoodClick();
+  for (;;) {
+    const c = C.lv == 1 ? [0, 0] : [ri(-4, 4), ri(-4, 4)], x = ri(-6, 6), y = ri(-6, 6), dx = ri(2, 4), dy = ri(2, 4);
+    const pts = [[x, y], [x + dx, y], [x, y + dy]], ang = [90, 180, 270, -90, -270][ri(0, 4)], img = pts.map(p => rd(rot(p, c, ang)));
+    if (C.lv == 2 && c[0] == 0 && c[1] == 0) continue;
+    if (img.concat(pts).every(p => Math.abs(p[0]) <= 10 && Math.abs(p[1]) <= 10)) {
+      C.q = { c, pts, ang, img, vi: ri(0, 2) };
+      break;
+    }
+  }
+  C.guess = null; C.done = false; C.hint = false; drawC();
+}
+
+function showHint() {
+  playWoodClick();
+  C.hint = true;
+  drawC();
+}
+
+function checkAnswer() {
+  if (!C.guess || C.done) return;
+  C.done = true; C.tot++;
+  const t = C.q.img[C.q.vi];
+  C.ok = C.guess[0] == t[0] && C.guess[1] == t[1];
+  if (C.ok) {
+    playCorrectSound();
+    C.sc++;
+  } else {
+    playWrongSound();
+  }
+  drawC();
+}
+
+$("#cc").addEventListener("pointerdown", e => {
+  if (C.done) return;
+  playWoodClick();
+  const r = e.target.getBoundingClientRect();
+  const d = window.devicePixelRatio || 1;
+  const w = e.target.width / d;
+  const h = e.target.height / d;
+  const u = Math.min(w, h) / 22;
+  
+  const clickX = e.clientX - r.left;
+  const clickY = e.clientY - r.top;
+  
+  const gx = Math.round((clickX - w / 2) / u);
+  const gy = Math.round((h / 2 - clickY) / u);
+  
+  C.guess = [Math.max(-10, Math.min(10, gx)), Math.max(-10, Math.min(10, gy))];
+  drawC();
+});
+
+function drawC() {
+  if (!C.q) return newQ();
+  const q = C.q, cv = $("#cc");
+  if (!cv) return;
+  const g = base(cv);
+  if (!g) return;
+  
+  const { ctx, X, Y, u } = g, v = L[q.vi];
+  $("#l1").classList.toggle("on", C.lv == 1);
+  $("#l2").classList.toggle("on", C.lv == 2);
+
+  poly(g, q.pts, "#0284c7", { lab: "" });
+  center(g, q.c, cname(q.c));
+
+  $("#cq").innerHTML = `Putar segitiga ABC dengan pusat <b>${cname(q.c)}</b> sebesar <span class="im">${angTxt(q.ang)}</span>. Di manakah posisi titik <b>${v}′</b>? <span class="mut">(${v} = ${P(q.pts[q.vi])})</span>`;
+
+  if (C.guess) {
+    ctx.strokeStyle = "#7c3aed";
+    ctx.lineWidth = 4 * g.d;
+    const p = C.guess, s = u * 0.4;
+    ctx.beginPath();
+    ctx.moveTo(X(p[0]) - s, Y(p[1]) - s); ctx.lineTo(X(p[0]) + s, Y(p[1]) + s);
+    ctx.moveTo(X(p[0]) + s, Y(p[1]) - s); ctx.lineTo(X(p[0]) - s, Y(p[1]) + s);
+    ctx.stroke();
+  }
+
+  if (C.done) {
+    arcs(g, q.pts, q.c, q.ang, "#ea580c");
+    poly(g, q.img, "#ea580c", { lab: "′" });
+  }
+
+  $("#cfb").innerHTML = !C.guess ? "Belum ada dugaan." : !C.done ? `Dugaanmu: ${P(C.guess)}. Tekan “Uji Dugaan”.` : C.ok ? `<span class="ok">Tepat sekali! ${v}′ = ${P(q.img[q.vi])} 🎉</span>` : `<span class="bad">Belum tepat.</span> Dugaanmu ${P(C.guess)}, jawaban benar adalah ${P(q.img[q.vi])}.`;
+
+  const p = q.pts[q.vi], c = q.c, t1 = [p[0] - c[0], p[1] - c[1]];
+  $("#chn").innerHTML = C.hint ? `💡 Petunjuk:<br>1. Geser ke O: ${P(p)} − ${P(c)} = ${P(t1)}<br>2. Putar ${angTxt(q.ang)} di O: ${P(rd(rot(t1, [0, 0], q.ang)))}<br>3. Geser balik + ${P(c)} = ${P(q.img[q.vi])}` : "";
+  $("#csc").textContent = C.sc + " benar dari " + C.tot + " soal";
+}
+
+/* ================= 4. GEOGEBRA MANDIRI ================= */
+function gset(u, o) { 
+  playWoodClick();
+  $("#ggb").src = u; 
+  $("#gopen").href = o || u; 
+}
+
+function loadGgb() {
+  playWoodClick();
+  const v = $("#gin").value.trim().replace(/[\/?#]+$/, "");
+  const m = v.match(/([A-Za-z0-9]{5,})$/);
+  if (!m) return;
+  gset("https://www.geogebra.org/material/iframe/id/" + m[1], "https://www.geogebra.org/m/" + m[1]);
+}
+
+function copyCmd(txt) {
+  playWoodClick();
+  const t = document.createElement("textarea");
+  t.value = txt;
+  document.body.appendChild(t);
+  t.select();
+  document.execCommand('copy');
+  document.body.removeChild(t);
+  
+  const toast = $("#copy-toast");
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 2000);
+}
+
+/* ================= INITIALIZATION ================= */
+window.onload = function () {
+  renderEInputs();
+  renderSInputs();
+
+  const startBtn = $("#btn-play-start");
+  startBtn.addEventListener("click", () => {
+    initAudio();
+    playFarmChime();
+    startBgm();
+    openDashboard();
+  });
+};
+</script>
+</body>
+</html>
